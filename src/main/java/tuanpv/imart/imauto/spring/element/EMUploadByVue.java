@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 import tuanpv.imart.imauto.spring.Action;
 import tuanpv.imart.imauto.spring.system.IMConfig;
 
-@Component(value = "upload")
-public class EMUpload extends Action {
+@Component(value = "uploadByVue")
+public class EMUploadByVue extends Action {
 
 	@Autowired
 	private IMConfig imConfig;
@@ -28,13 +28,19 @@ public class EMUpload extends Action {
 		String xpath = replaceParam(data, args[1]);
 		String value = replaceParam(data, args[2]);
 
+		// set XPath for sub component
+		String xpathFile = String.format("%s//input[@type='file']", xpath);
+		String xpathList = String.format("%s//table[@id='attachfile-file-list-table']", xpath);
+
 		// goto login page
 		if (StringUtils.isNotEmpty(value)) {
 			File file = new File(value);
 			if (file.exists() && file.isFile()) {
-				WebElement upload = driver.findElement(By.xpath(xpath));
+				WebElement upload = driver.findElement(By.xpath(xpathFile));
 				upload.sendKeys(value);
-				Thread.sleep(2000);
+
+				// wait for uploading finish
+				waitBy(By.xpath(xpathList));
 			}
 		}
 	}

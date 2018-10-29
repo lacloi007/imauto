@@ -2,31 +2,29 @@ package tuanpv.imart.imauto.spring.action;
 
 import java.util.Map;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import tuanpv.imart.imauto.spring.Action;
-import tuanpv.imart.imauto.spring.system.IMConfig;
+import tuanpv.imart.imauto.spring.element.EMClick;
 
-@Component(value = "wait4Click")
+@Component(value = ACWait4Click.NAME)
 public class ACWait4Click extends Action {
+	public static final String NAME = "wait4Click";
 
 	@Autowired
-	private IMConfig imConfig;
+	private ACWait wait;
+
+	@Autowired
+	private EMClick click;
 
 	@Override
 	public void execute(Map<String, Object> data, String[] args) throws Exception {
 
-		// initialize variable
-		init(imConfig);
+		// call wait
+		wait.execute(data, new String[] { ACWait.NAME, args[1], "clickable" });
 
-		// get input from arguments
-		String xpath = args[1];
-
-		// action
-		WebElement element = waitBy(By.xpath(xpath), CLICKABLE);
-		element.click();
+		// call text
+		click.execute(data, new String[] { EMClick.NAME, args[1] });
 	}
 }

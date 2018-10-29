@@ -2,21 +2,21 @@ package tuanpv.imart.imauto.spring.action;
 
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import tuanpv.imart.imauto.spring.Action;
 
-@Component(value = "set")
-public class ACSet extends Action {
+@Component(value = "delete")
+public class ACDelete extends Action {
 
 	@Override
 	public void execute(Map<String, Object> data, String[] args) throws Exception {
 
 		// get input from arguments
-		String value = args.length >= 3 ? args[2] : StringUtils.EMPTY;
+		String key = replaceParam(data, args[1]);
 
-		// set value to data
-		data.put(args[1], replaceParam(data, value));
+		// remove key from TEST-DATA
+		if (data.containsKey(key))
+			data.remove(key);
 	}
 }

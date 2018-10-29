@@ -9,8 +9,9 @@ import org.springframework.stereotype.Component;
 import tuanpv.imart.imauto.spring.Action;
 import tuanpv.imart.imauto.spring.system.IMConfig;
 
-@Component(value = "click")
+@Component(value = EMClick.NAME)
 public class EMClick extends Action {
+	public static final String NAME = "click";
 
 	@Autowired
 	private IMConfig imConfig;
@@ -22,7 +23,7 @@ public class EMClick extends Action {
 		init(imConfig);
 
 		// get input from arguments
-		String xpath = args[1];
+		String xpath = replaceParam(data, args[1]);
 
 		// goto login page
 		driver.findElement(By.xpath(xpath)).click();

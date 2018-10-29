@@ -2,7 +2,6 @@ package tuanpv.imart.imauto.spring.element;
 
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +23,8 @@ public class EMSelect extends Action {
 		init(imConfig);
 
 		// get input from arguments
-		String xpath = args[1];
-		String value = args.length >= 3 ? args[2] : StringUtils.EMPTY;
+		String xpath = replaceParam(data, args[1]);
+		String value = replaceParam(data, args[2]);
 
 		// goto login page
 		Select dropdown = new Select(driver.findElement(By.xpath(xpath)));

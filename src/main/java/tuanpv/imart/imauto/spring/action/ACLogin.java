@@ -24,8 +24,11 @@ public class ACLogin extends Action {
 		init(imConfig);
 
 		// get input from arguments
-		String user = args[1];
-		String pass = args.length >= 3 ? args[2] : StringUtils.EMPTY;
+		String user = replaceParam(data, args[1]);
+
+		// allow password is empty
+		String pass = parseArgs(args, 2, StringUtils.EMPTY);
+		pass = replaceParam(data, pass);
 
 		// goto login page
 		driver.get(common.get("log-in-url").toString());

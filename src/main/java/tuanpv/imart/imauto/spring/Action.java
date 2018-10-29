@@ -51,9 +51,15 @@ public abstract class Action {
 		waitBy(By.className(common.get("logo-class-name").toString()), VISIBLE);
 	}
 
-	public String replaceParam(Map<String, Object> map, String template) {
-		StrSubstitutor sub = new StrSubstitutor(map, "${", "}");
+	public String replaceParam(Map<String, Object> data, String template) {
+		StrSubstitutor sub = new StrSubstitutor(data, "${", "}");
 		return sub.replace(template);
+	}
+
+	public String parseArgs(String[] args, int idx, String def) {
+		if (args.length > idx)
+			return args[idx];
+		return def;
 	}
 
 	public abstract void execute(Map<String, Object> data, String[] args) throws Exception;

@@ -23,7 +23,7 @@ public class WFApply extends Action {
 		init(imConfig);
 
 		// get input from arguments
-		String flowName = args[1];
+		String flowName = replaceParam(data, args[1]);
 
 		// goto login page
 		driver.get(common.get("wf-apply-url").toString());

@@ -2,35 +2,29 @@ package tuanpv.imart.imauto.spring.action;
 
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import tuanpv.imart.imauto.spring.Action;
-import tuanpv.imart.imauto.spring.system.IMConfig;
+import tuanpv.imart.imauto.spring.element.EMText;
 
-@Component(value = "wait4Text")
+@Component(value = ACWait4Text.NAME)
 public class ACWait4Text extends Action {
+	public static final String NAME = "wait4Text";
 
 	@Autowired
-	private IMConfig imConfig;
+	private ACWait wait;
+
+	@Autowired
+	private EMText text;
 
 	@Override
 	public void execute(Map<String, Object> data, String[] args) throws Exception {
 
-		// initialize variable
-		init(imConfig);
+		// call wait
+		wait.execute(data, new String[] { ACWait.NAME, args[1], "visible" });
 
-		// get input from arguments
-		String xpath = args[1];
-		String value = args[2] == null ? StringUtils.EMPTY : args[2].trim();
-		value = replaceParam(data, value);
-
-		// action
-		WebElement element = waitBy(By.xpath(xpath));
-		element.clear();
-		element.sendKeys(value);
+		// call text
+		text.execute(data, new String[] { EMText.NAME, args[1], args[2] });
 	}
 }

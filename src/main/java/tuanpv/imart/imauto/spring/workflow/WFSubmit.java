@@ -26,8 +26,8 @@ public class WFSubmit extends Action {
 		init(imConfig);
 
 		// get input from arguments
-		String xpath = args[1];
-		String descEx = args[2];
+		String xpath = replaceParam(data, args[1]);
+		String descEx = replaceParam(data, args[2]);
 
 		// create description
 		String descValue = replaceParam(data, descEx);

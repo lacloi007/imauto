@@ -2,6 +2,7 @@ package tuanpv.imart.imauto.spring.action;
 
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -9,8 +10,9 @@ import org.springframework.stereotype.Component;
 import tuanpv.imart.imauto.spring.Action;
 import tuanpv.imart.imauto.spring.system.IMConfig;
 
-@Component(value = "wait")
-public class ACWaitBy extends Action {
+@Component(value = ACWait.NAME)
+public class ACWait extends Action {
+	public static final String NAME = "wait";
 
 	@Autowired
 	private IMConfig imConfig;
@@ -22,13 +24,12 @@ public class ACWaitBy extends Action {
 		init(imConfig);
 
 		// get input from arguments
-		String xpath = args[1];
-		String val = args.length >= 3 ? args[2].toLowerCase().trim() : "visible";
+		String xpath = replaceParam(data, args[1]);
+		String value = parseArgs(args, 2, StringUtils.EMPTY);
+		value = replaceParam(data, value);
 
 		// default is visible
-		int type = VISIBLE;
-		if (val.equals("clickable"))
-			type = CLICKABLE;
+		int type = value.equalsIgnoreCase("clickable") ? CLICKABLE : VISIBLE;
 
 		// wait by
 		waitBy(By.xpath(xpath), type);
