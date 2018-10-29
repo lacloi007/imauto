@@ -19,8 +19,9 @@ import org.springframework.stereotype.Component;
 import tuanpv.imart.imauto.spring.Action;
 import tuanpv.imart.imauto.spring.system.IMConfig;
 
-@Component(value = "takeScreenShot")
+@Component(value = ACTakeScreenShot.NAME)
 public class ACTakeScreenShot extends Action {
+	public static final String NAME = "takeScreenShot";
 
 	@Autowired
 	private IMConfig imConfig;
@@ -47,11 +48,11 @@ public class ACTakeScreenShot extends Action {
 
 		// get window height
 		Integer dfWidth = Integer.parseInt(driverConfig.get("width"));
-		// System.out.printf(" default screen   [%6d, %6d]\n", dfWidth, dfHeight);
+		// System.out.printf(" default screen [%6d, %6d]\n", dfWidth, dfHeight);
 
 		// scroll height
 		Integer brHeight = ((Long) executor.executeScript("return document.body.scrollHeight")).intValue();
-		// System.out.printf(" scroll size      [%6d, %6d]\n", brWidth, brHeight);
+		// System.out.printf(" scroll size [%6d, %6d]\n", brWidth, brHeight);
 		Integer position = 0;
 
 		// image default
@@ -66,7 +67,8 @@ public class ACTakeScreenShot extends Action {
 			// take screen shoot
 			BufferedImage image = ImageIO.read(((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE));
 			if (position == 0) {
-				// System.out.printf(" screen shot part [%6d, %6d]\n", image.getWidth(), image.getHeight());
+				// System.out.printf(" screen shot part [%6d, %6d]\n",
+				// image.getWidth(), image.getHeight());
 				actualWidth = image.getWidth();
 				actualHeight = image.getHeight();
 			}

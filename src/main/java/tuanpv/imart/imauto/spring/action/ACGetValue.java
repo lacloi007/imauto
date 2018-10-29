@@ -1,18 +1,16 @@
-package tuanpv.imart.imauto.spring.element;
+package tuanpv.imart.imauto.spring.action;
 
 import java.util.Map;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.Select;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import tuanpv.imart.imauto.spring.Action;
 import tuanpv.imart.imauto.spring.system.IMConfig;
 
-@Component(value = EMSelect.NAME)
-public class EMSelect extends Action {
-	public static final String NAME = "select";
+@Component(value = "getValue")
+public class ACGetValue extends Action {
 
 	@Autowired
 	private IMConfig imConfig;
@@ -25,10 +23,10 @@ public class EMSelect extends Action {
 
 		// get input from arguments
 		String xpath = replaceParam(data, args[1]);
-		String value = replaceParam(data, args[2]);
+		String key = replaceParam(data, args[2]);
 
-		// goto login page
-		Select dropdown = new Select(driver.findElement(By.xpath(xpath)));
-		dropdown.selectByVisibleText(value);
+		// set value to data
+		String value = driver.findElement(By.xpath(xpath)).getAttribute("value");
+		data.put(key, value);
 	}
 }

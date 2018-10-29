@@ -11,8 +11,8 @@ import tuanpv.imart.imauto.spring.Action;
 import tuanpv.imart.imauto.spring.action.ACTakeScreenShot;
 import tuanpv.imart.imauto.spring.system.IMConfig;
 
-@Component(value = "wfSubmit")
-public class WFSubmit extends Action {
+@Component(value = "wfGoApprove")
+public class WFGoApprove extends Action {
 
 	@Autowired
 	private ACTakeScreenShot takeScreenShot;
@@ -27,35 +27,35 @@ public class WFSubmit extends Action {
 		init(imConfig);
 
 		// get input from arguments
-		String xpath = replaceParam(data, args[1]);
-		String descEx = replaceParam(data, args[2]);
+		String description = replaceParam(data, args[1]);
 
-		// create description
-		String descValue = replaceParam(data, descEx);
+		// goto page
+		driver.get(common.get("wf-approve-url").toString());
 
-		// click
-		waitBy(By.xpath(xpath), CLICKABLE).click();
+		// enter user name
+		waitBy(By.id("conditionGreyBox"), CLICKABLE).click();
+
+		// goto Work flow window
 		WebElement gbWindow = waitBy(By.className("GB_frame"));
 		driver.switchTo().frame(gbWindow);
 		driver.switchTo().frame(driver.findElement(By.id("GB_frame")));
-		driver.switchTo().frame(driver.findElement(By.id("IMW_PROC_MAIN")));
 
-		// input description for applying
-		WebElement wfForm = driver.findElement(By.id("allBlock"));
-		WebElement wfDesc = wfForm.findElement(By.xpath("//input[@type='text' and @name='matterName']"));
-		wfDesc.sendKeys(descValue);
+		// enter Description for searching
+		WebElement wfForm = driver.findElement(By.id("imui-tabitem-tab_searchInfo"));
+		WebElement wfElem = wfForm.findElement(By.id("listPageCol_MatterName"));
+		wfElem.clear();
+		wfElem.sendKeys(description);
 
-		// take screen shot
-		takeScreenShot.execute(data, new String[] { ACTakeScreenShot.NAME });
+		// click search
+		wfForm.findElement(By.id("search")).click();
 
-		// run apply
-		driver.findElement(By.xpath(xpath)).click();
-		waitBy(By.xpath("//div[contains(@class, 'ui-dialog-buttonset')]/button[1]"), CLICKABLE).click();
-
-		// wait for finish
-		waitLogo();
+		// goto first item found
+		WebElement lnkProcess = waitBy(By.xpath("//tr[@id='1']/td[1]/a"));
 
 		// take screen shot
 		takeScreenShot.execute(data, new String[] { ACTakeScreenShot.NAME });
+
+		// click to forward to Process screen
+		lnkProcess.click();
 	}
 }
