@@ -1,6 +1,7 @@
 package tuanpv.imart.imauto.spring;
 
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.commons.lang.text.StrSubstitutor;
 import org.openqa.selenium.By;
@@ -51,7 +52,7 @@ public abstract class Action {
 		waitBy(By.className(common.get("logo-class-name").toString()), VISIBLE);
 	}
 
-	public String replaceParam(Map<String, Object> data, String template) {
+	public static String replaceParam(Map<String, Object> data, String template) {
 		StrSubstitutor sub = new StrSubstitutor(data, "${", "}");
 		return sub.replace(template);
 	}
@@ -60,6 +61,10 @@ public abstract class Action {
 		if (args.length > idx)
 			return args[idx];
 		return def;
+	}
+
+	public String uuid() {
+		return UUID.randomUUID().toString();
 	}
 
 	public abstract void execute(Map<String, Object> data, String[] args) throws Exception;

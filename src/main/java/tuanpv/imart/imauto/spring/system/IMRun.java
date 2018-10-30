@@ -13,8 +13,9 @@ import org.springframework.stereotype.Component;
 import tuanpv.imart.imauto.spring.Action;
 import tuanpv.imart.imauto.spring.action.ACLog;
 
-@Component(value = "imRun")
+@Component(value = IMRun.NAME)
 public class IMRun extends Action {
+	public static final String NAME = "imRun";
 
 	@Autowired
 	private ACLog log;
@@ -43,52 +44,74 @@ public class IMRun extends Action {
 			Map<String, Object> testData = new TreeMap<>();
 			testData.put("test-time", today);
 			testData.put("test-time-long", today.getTime() + "");
-			testData.put("uuid", genUUID());
+			testData.put("args", -1);
 
-			// run test case
-			List<String[]> steps = getSteps(testName);
-			for (String[] step : steps) {
-				String actCode = step[0];
+			try {
+				run(testData, getSteps(testName));
+			} catch (Exception exception) {
+				String content = String.format("=> Exception:%s\n\n", exception.getMessage());
+				log.execute(testData, new String[] { ACLog.NAME, content });
+				throw exception;
+			}
+		}
+	}
 
-				try {
-					// run in case ACTION-CODE is defined in system
-					if (context.containsBean(actCode)) {
-						Action action = (Action) context.getBean(actCode);
-						action.execute(testData, step);
-						continue;
-					}
+	private final String argsKeyIdx = "args";
+	private final String argsArrTpl = "args(%d)";
+	private final String argsItmTpl = "args[%d]";
 
-					// run in case ACTION-CODE is defined from EXCEL Input
-					if (config.containsKey(actCode)) {
-						final String argumentTemplate = "args[%d]";
+	private void run(Map<String, Object> testData, List<String[]> steps) throws Exception {
+		for (String[] step : steps) {
+			String command = step[0];
 
-						// add argument to TEST-DATA
-						for (int idx = 1; idx < step.length; idx++) {
-							testData.put(String.format(argumentTemplate, idx - 1), step[idx]);
-						}
+			// run in case ACTION-CODE is defined in system
+			if (context.containsBean(command)) {
+				Action action = (Action) context.getBean(command);
+				action.execute(testData, step);
+				continue;
+			}
 
-						// run custom command
-						List<String[]> cmdSteps = getSteps(actCode);
-						for (String[] cmdStep : cmdSteps) {
-							String cmdCode = cmdStep[0];
-							if (context.containsBean(cmdCode)) {
-								Action action = (Action) context.getBean(cmdCode);
-								action.execute(testData, cmdStep);
-							}
-						}
+			// run in case ACTION-CODE is defined from EXCEL Input
+			if (config.containsKey(command)) {
 
-						// delete argument from TEST-DATA
-						for (int idx = 1; idx < step.length; idx++) {
-							testData.remove(String.format(argumentTemplate, idx - 1));
-						}
+				// define variable
+				int argsIdx = Integer.parseInt(testData.get(argsKeyIdx).toString()) + 1;
+				String argsKeyArr = String.format(argsArrTpl, argsIdx);
+				String[] argsArr = new String[step.length - 1];
 
-						continue;
-					}
-				} catch (Exception exception) {
-					String content = String.format("=> Exception:%s\n + %s\n\n", exception.getMessage(), exception.getLocalizedMessage());
-					log.execute(testData, new String[] { ACLog.NAME, content });
-					throw exception;
+				// add argument to TEST-DATA
+				for (int idx = 1; idx < step.length; idx++) {
+					testData.put(String.format(argsItmTpl, idx - 1), step[idx]);
+					argsArr[idx - 1] = step[idx];
 				}
+
+				// store argument to "ARGS(index)"
+				testData.put(argsKeyIdx, argsIdx);
+				testData.put(argsKeyArr, argsArr);
+
+				// run custom command
+				run(testData, getSteps(command));
+
+				// delete current argument from TEST-DATA
+				argsIdx = Integer.parseInt(testData.get(argsKeyIdx).toString());
+				argsArr = (String[]) testData.get(String.format(argsArrTpl, argsIdx));
+				for (int idx = 1; idx < argsArr.length; idx++) {
+					testData.remove(String.format(argsItmTpl, idx - 1));
+				}
+
+				// reload argument from ARGS Storage
+				argsIdx = argsIdx - 1;
+				argsKeyArr = String.format(argsArrTpl, argsIdx);
+				if (testData.containsKey(argsKeyArr)) {
+					argsArr = (String[]) testData.get(argsKeyArr);
+					for (int idx = 0; idx < argsArr.length; idx++) {
+						testData.put(String.format(argsItmTpl, idx), argsArr[idx]);
+					}
+				}
+
+				// update index of argument
+				testData.put(argsKeyIdx, argsIdx);
+				continue;
 			}
 		}
 	}

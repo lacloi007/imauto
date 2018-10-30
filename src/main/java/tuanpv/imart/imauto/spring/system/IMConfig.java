@@ -16,8 +16,10 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Component;
 
-@Component(value = "imConfig")
+@Component(value = IMConfig.NAME)
 public class IMConfig {
+	public static final String NAME = "imConfig";
+
 	public WebDriver driver;
 	public WebDriverWait wait;
 	public Map<String, Object> config;

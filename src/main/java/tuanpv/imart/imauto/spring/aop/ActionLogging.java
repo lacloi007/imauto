@@ -1,5 +1,7 @@
 package tuanpv.imart.imauto.spring.aop;
 
+import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
@@ -7,6 +9,7 @@ import org.aspectj.lang.annotation.Before;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+import tuanpv.imart.imauto.spring.Action;
 import tuanpv.imart.imauto.spring.action.ACLog;
 
 @Component
@@ -14,8 +17,10 @@ import tuanpv.imart.imauto.spring.action.ACLog;
 @Order(1)
 public class ActionLogging {
 
+	@SuppressWarnings("unchecked")
 	@Before("execution(* tuanpv.imart.imauto.spring.Action.execute(..))")
 	private void beforeExecute(JoinPoint joinPoint) {
+		Map<String, Object> testData = (Map<String, Object>) joinPoint.getArgs()[0];
 		Object object = joinPoint.getArgs()[1];
 		Object target = joinPoint.getTarget();
 		if (object != null && object instanceof String[]) {
@@ -40,6 +45,8 @@ public class ActionLogging {
 			template += "\n";
 
 			// log
+			param1 = Action.replaceParam(testData, param1);
+			param2 = Action.replaceParam(testData, param2);
 			System.out.printf(template, array[0], param1, param2);
 		}
 	}

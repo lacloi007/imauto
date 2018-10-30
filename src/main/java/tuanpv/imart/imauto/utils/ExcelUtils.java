@@ -7,20 +7,19 @@ import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
 public class ExcelUtils {
-	public static Map<String, Object> readWorkbook(Workbook book) {
+	public static Map<String, Object> readWorkbook(Map<String, Object> data, Workbook book) {
+
 		// evaluator workbook
 		FormulaEvaluator evaluator = book.getCreationHelper().createFormulaEvaluator();
-		evaluator.evaluateAll();
 
-		Map<String, Object> result = new TreeMap<>();
-		DataFormatter dataFormatter = new DataFormatter();
+		// working
+		CellFormatter dataFormatter = new CellFormatter(evaluator);
 
 		for (Sheet sheet : book) {
 			evaluator.evaluateAll();
@@ -43,31 +42,31 @@ public class ExcelUtils {
 			// process read
 			Object shObj = null;
 			if (type.equals("Map")) {
-				shObj = sheet2Map(sheet, start, check);
+				shObj = sheet2Map(evaluator, sheet, start, check);
 			}
 
 			if (type.equals("Array")) {
-				shObj = sheet2Array(sheet, start, check);
+				shObj = sheet2Array(evaluator, sheet, start, check);
 			}
 
 			if (type.equals("List")) {
-				shObj = sheet2List(sheet, start, check);
+				shObj = sheet2List(evaluator, sheet, start, check);
 			}
 
 			if (shObj != null) {
 				shVal.put("object", shObj);
-				result.put(shKey, shVal);
+				data.put(shKey, shVal);
 			}
 		}
 
-		return result;
+		return data;
 	}
 
-	public static String[] sheet2Array(Sheet sheet, int start, int check) {
+	public static String[] sheet2Array(FormulaEvaluator evaluator, Sheet sheet, int start, int check) {
 		List<String> array = new ArrayList<>();
 
 		// Create a DataFormatter to format and get each cell's value as String
-		DataFormatter dataFormatter = new DataFormatter();
+		CellFormatter dataFormatter = new CellFormatter(evaluator);
 
 		for (Row row : sheet) {
 			if (row.getRowNum() < start) {
@@ -84,11 +83,11 @@ public class ExcelUtils {
 		return array.toArray(new String[array.size()]);
 	}
 
-	public static Map<String, String> sheet2Map(Sheet sheet, int start, int check) {
+	public static Map<String, String> sheet2Map(FormulaEvaluator evaluator, Sheet sheet, int start, int check) {
 		Map<String, String> map = new TreeMap<String, String>();
 
 		// Create a DataFormatter to format and get each cell's value as String
-		DataFormatter dataFormatter = new DataFormatter();
+		CellFormatter dataFormatter = new CellFormatter(evaluator);
 
 		for (Row row : sheet) {
 			if (row.getRowNum() < start) {
@@ -106,10 +105,10 @@ public class ExcelUtils {
 		return map;
 	}
 
-	public static List<String[]> sheet2List(Sheet sheet, int start, int check) {
+	public static List<String[]> sheet2List(FormulaEvaluator evaluator, Sheet sheet, int start, int check) {
 		List<String[]> list = new ArrayList<>();
 		// Create a DataFormatter to format and get each cell's value as String
-		DataFormatter dataFormatter = new DataFormatter();
+		CellFormatter dataFormatter = new CellFormatter(evaluator);
 
 		for (Row row : sheet) {
 			if (row.getRowNum() < start) {

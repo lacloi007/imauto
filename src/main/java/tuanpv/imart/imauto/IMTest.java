@@ -2,14 +2,15 @@ package tuanpv.imart.imauto;
 
 import java.io.File;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import tuanpv.imart.imauto.spring.Action;
 import tuanpv.imart.imauto.spring.system.IMConfig;
+import tuanpv.imart.imauto.spring.system.IMRun;
 import tuanpv.imart.imauto.utils.ExcelUtils;
 
 public class IMTest {
@@ -21,36 +22,40 @@ public class IMTest {
 			return;
 		}
 
-		String filePath = args[0];
-		File file = new File(filePath);
-		if (file.exists() && file.isFile() && file.canRead()) {
+		// read data from EXCEL
+		Map<String, Object> data = new TreeMap<String, Object>();
+		for (String filePath : args) {
+			File file = new File(filePath);
+			if (file.exists() && file.isFile() && file.canRead()) {
 
-			// read data input from Excel file
-			Workbook workbook = WorkbookFactory.create(file);
-			Map<String, Object> data = ExcelUtils.readWorkbook(workbook);
-			workbook.close();
-
-			// initialize context
-			context = new ClassPathXmlApplicationContext(Constant.FILE_APPLICATION_CONTEXT);
-
-			// initialize data to IMConfig
-			IMConfig config = (IMConfig) context.getBean("imConfig");
-
-			try {
-
-				// start read data
-				config.start(data);
-
-				// run default action
-				Action imRun = (Action) context.getBean("imRun");
-				imRun.execute(null, null);
-			} catch (Exception e) {
-				e.printStackTrace();
-			} finally {
-
-				// close
-				config.destroy();
+				// read data input from Excel file
+				Workbook workbook = WorkbookFactory.create(file);
+				data = ExcelUtils.readWorkbook(data, workbook);
+				workbook.close();
 			}
+		}
+
+		// initialize context
+		context = new ClassPathXmlApplicationContext(Constant.FILE_APPLICATION_CONTEXT);
+
+		// initialize data to IMConfig
+		IMConfig config = context.getBean(IMConfig.class);
+
+		try {
+
+			// start read data
+			config.start(data);
+
+			// run default action
+			IMRun imRun = context.getBean(IMRun.class);
+			imRun.execute(null, null);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+
+			// close
+			config.destroy();
 		}
 	}
 }
