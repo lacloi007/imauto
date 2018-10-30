@@ -17,6 +17,8 @@ public class ACInitialize extends Action {
 		data.put("id.uuid", uuid());
 
 		// log
-		System.out.printf(" + id.desc : %s\n + id.uuid : %s\n\n");
+		System.out.printf(" + id.desc : %s\n + id.uuid : %s\n\n"
+				, data.get("id.desc")
+				, data.get("id.uuid"));
 	}
 }
