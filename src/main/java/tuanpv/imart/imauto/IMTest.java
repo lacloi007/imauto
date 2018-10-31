@@ -11,7 +11,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import tuanpv.imart.imauto.spring.system.IMConfig;
 import tuanpv.imart.imauto.spring.system.IMRun;
-import tuanpv.imart.imauto.utils.ExcelUtils;
+import tuanpv.imart.imauto.utils.IMExcelUtils;
 
 public class IMTest {
 	private static ApplicationContext context;
@@ -30,7 +30,7 @@ public class IMTest {
 
 				// read data input from Excel file
 				Workbook workbook = WorkbookFactory.create(file);
-				data = ExcelUtils.readWorkbook(data, workbook);
+				data = IMExcelUtils.readWorkbook(data, workbook);
 				workbook.close();
 			}
 		}

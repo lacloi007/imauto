@@ -12,11 +12,13 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
-public class ExcelUtils {
+public class IMExcelUtils {
+	private static FormulaEvaluator evaluator;
+
 	public static Map<String, Object> readWorkbook(Map<String, Object> data, Workbook book) {
 
 		// evaluator workbook
-		FormulaEvaluator evaluator = book.getCreationHelper().createFormulaEvaluator();
+		evaluator = book.getCreationHelper().createFormulaEvaluator();
 
 		// working
 		CellFormatter dataFormatter = new CellFormatter(evaluator);
@@ -42,15 +44,15 @@ public class ExcelUtils {
 			// process read
 			Object shObj = null;
 			if (type.equals("Map")) {
-				shObj = sheet2Map(evaluator, sheet, start, check);
+				shObj = sheet2Map(sheet, start, check);
 			}
 
 			if (type.equals("Array")) {
-				shObj = sheet2Array(evaluator, sheet, start, check);
+				shObj = sheet2Array(sheet, start, check);
 			}
 
 			if (type.equals("List")) {
-				shObj = sheet2List(evaluator, sheet, start, check);
+				shObj = sheet2List(sheet, start, check);
 			}
 
 			if (shObj != null) {
@@ -62,7 +64,7 @@ public class ExcelUtils {
 		return data;
 	}
 
-	public static String[] sheet2Array(FormulaEvaluator evaluator, Sheet sheet, int start, int check) {
+	public static String[] sheet2Array(Sheet sheet, int start, int check) {
 		List<String> array = new ArrayList<>();
 
 		// Create a DataFormatter to format and get each cell's value as String
@@ -83,7 +85,7 @@ public class ExcelUtils {
 		return array.toArray(new String[array.size()]);
 	}
 
-	public static Map<String, String> sheet2Map(FormulaEvaluator evaluator, Sheet sheet, int start, int check) {
+	public static Map<String, String> sheet2Map(Sheet sheet, int start, int check) {
 		Map<String, String> map = new TreeMap<String, String>();
 
 		// Create a DataFormatter to format and get each cell's value as String
@@ -105,7 +107,7 @@ public class ExcelUtils {
 		return map;
 	}
 
-	public static List<String[]> sheet2List(FormulaEvaluator evaluator, Sheet sheet, int start, int check) {
+	public static List<String[]> sheet2List(Sheet sheet, int start, int check) {
 		List<String[]> list = new ArrayList<>();
 		// Create a DataFormatter to format and get each cell's value as String
 		CellFormatter dataFormatter = new CellFormatter(evaluator);
