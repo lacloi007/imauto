@@ -12,11 +12,21 @@ import org.springframework.stereotype.Component;
 import tuanpv.imart.imauto.spring.Action;
 import tuanpv.imart.imauto.spring.action.ACLog;
 
+/**
+ * Logging for IMAuto.
+ * 
+ * @author TuanPV
+ */
 @Component
 @Aspect
 @Order(1)
 public class ActionLogging {
 
+	/**
+	 * System support show 2 parameter from input.
+	 * 
+	 * @param joinPoint
+	 */
 	@SuppressWarnings("unchecked")
 	@Before("execution(* tuanpv.imart.imauto.spring.Action.execute(..))")
 	private void beforeExecute(JoinPoint joinPoint) {

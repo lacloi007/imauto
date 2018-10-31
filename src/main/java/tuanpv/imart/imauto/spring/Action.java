@@ -9,21 +9,21 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import tuanpv.imart.imauto.Constant;
 import tuanpv.imart.imauto.extension.ExtensionConditions;
 import tuanpv.imart.imauto.spring.system.IMConfig;
 
 public abstract class Action {
+	// define constant
 	public static final int CLICKABLE = 1;
 	public static final int VISIBLE = 2;
 
+	// define public object
 	public WebDriver driver;
 	public WebDriverWait wait;
 	public Map<String, Object> config;
-	public Map<String, String> common, driverConfig;;
+	public Map<String, String> common, driverConfig;
 	public String[] tests;
-
-	// private data
-	public Map<String, Object> props;
 
 	public void init(IMConfig imConfig) {
 		this.driver = imConfig.driver;
@@ -42,6 +42,18 @@ public abstract class Action {
 		default:
 			return wait.until(ExtensionConditions.visibilityOfElementLocated(by));
 		}
+	}
+
+	public WebElement findElement(Map<String, Object> data, String xpath) throws Exception {
+		WebElement element = null;
+		if (data.containsKey(Constant.KEY_ELM_PREVIOUS)) {
+			element = (WebElement) data.get(Constant.KEY_ELM_PREVIOUS);
+			data.remove(Constant.KEY_ELM_PREVIOUS);
+		} else {
+			element = driver.findElement(By.xpath(xpath));
+		}
+
+		return element;
 	}
 
 	public WebElement waitBy(By by) throws Exception {

@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -25,6 +24,13 @@ public class IMRun extends Action {
 
 	@Autowired
 	private IMConfig imConfig;
+
+	/**
+	 * @throws Exception
+	 */
+	public void execute() throws Exception {
+		execute(null, null);
+	}
 
 	@Override
 	public void execute(Map<String, Object> data, String[] args) throws Exception {
@@ -120,9 +126,5 @@ public class IMRun extends Action {
 	private List<String[]> getSteps(String sheetName) {
 		Map<String, Object> testCase = (Map<String, Object>) config.get(sheetName);
 		return (List<String[]>) testCase.get("object");
-	}
-
-	private String genUUID() {
-		return UUID.randomUUID().toString().replace("-", "");
 	}
 }
