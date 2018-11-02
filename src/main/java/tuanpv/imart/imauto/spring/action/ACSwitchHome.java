@@ -2,16 +2,14 @@ package tuanpv.imart.imauto.spring.action;
 
 import java.util.Map;
 
-import org.openqa.selenium.By;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import tuanpv.imart.imauto.spring.Action;
 import tuanpv.imart.imauto.spring.system.IMConfig;
 
-@Component(value = ACWait4Click.NAME)
-public class ACWait4Click extends Action {
-	public static final String NAME = "wait4Click";
+@Component(value = "switchHome")
+public class ACSwitchHome extends Action {
 
 	@Autowired
 	private IMConfig imConfig;
@@ -22,10 +20,18 @@ public class ACWait4Click extends Action {
 		// initialize variable
 		init(imConfig);
 
-		// get input from arguments
-		String xpath = replaceParam(data, args[1]);
+		// working with new window
+		String currentWindow = driver.getWindowHandle();
 
-		// goto login page
-		waitBy(By.xpath(xpath), CLICKABLE).click();
+		// close PopUp
+		driver.close();
+
+		// switch to each other
+		for (String handle : driver.getWindowHandles()) {
+			if (!handle.equalsIgnoreCase(currentWindow)) {
+				driver.switchTo().window(handle);
+				break;
+			}
+		}
 	}
 }

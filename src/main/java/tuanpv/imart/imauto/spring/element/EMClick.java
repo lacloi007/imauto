@@ -26,7 +26,6 @@ public class EMClick extends Action {
 		String xpath = replaceParam(data, args[1]);
 
 		// goto login page
-		// driver.findElement(By.xpath(xpath)).click();
-		waitBy(By.xpath(xpath), CLICKABLE).click();
+		driver.findElement(By.xpath(xpath)).click();
 	}
 }

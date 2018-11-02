@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import tuanpv.imart.imauto.spring.Action;
 import tuanpv.imart.imauto.spring.action.ACLog;
+import tuanpv.imart.imauto.spring.action.ACTakeScreenShot;
 
 @Component(value = IMRun.NAME)
 public class IMRun extends Action {
@@ -18,6 +19,9 @@ public class IMRun extends Action {
 
 	@Autowired
 	private ACLog log;
+
+	@Autowired
+	private ACTakeScreenShot takeScreenShot;
 
 	@Autowired
 	private ApplicationContext context;
@@ -57,6 +61,7 @@ public class IMRun extends Action {
 			} catch (Exception exception) {
 				String content = String.format("=> Exception:%s\n\n", exception.getMessage());
 				log.execute(testData, new String[] { ACLog.NAME, content });
+				takeScreenShot.execute(testData, new String[] { ACTakeScreenShot.NAME });
 				throw exception;
 			}
 		}
