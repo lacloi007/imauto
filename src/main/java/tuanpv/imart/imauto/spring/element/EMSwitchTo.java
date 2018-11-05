@@ -1,4 +1,4 @@
-package tuanpv.imart.imauto.spring.action;
+package tuanpv.imart.imauto.spring.element;
 
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -12,7 +12,7 @@ import tuanpv.imart.imauto.spring.Action;
 import tuanpv.imart.imauto.spring.system.IMConfig;
 
 @Component(value = "switchTo")
-public class ACSwitchTo extends Action {
+public class EMSwitchTo extends Action {
 
 	@Autowired
 	private IMConfig imConfig;

@@ -1,4 +1,4 @@
-package tuanpv.imart.imauto.spring.action;
+package tuanpv.imart.imauto.spring.element;
 
 import java.util.Map;
 
@@ -9,7 +9,7 @@ import tuanpv.imart.imauto.spring.Action;
 import tuanpv.imart.imauto.spring.system.IMConfig;
 
 @Component(value = "switchHome")
-public class ACSwitchHome extends Action {
+public class EMSwitchHome extends Action {
 
 	@Autowired
 	private IMConfig imConfig;

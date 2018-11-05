@@ -1,4 +1,4 @@
-package tuanpv.imart.imauto.spring.action;
+package tuanpv.imart.imauto.spring.custom;
 
 import java.util.Date;
 import java.util.Map;
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import tuanpv.imart.imauto.spring.Action;
 
 @Component(value = "initialize")
-public class ACInitialize extends Action {
+public class CTInitialize extends Action {
 
 	@Override
 	public void execute(Map<String, Object> data, String[] args) throws Exception {
